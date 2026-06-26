@@ -2,1941 +2,496 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b1120">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GrowthOS">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
-<title>GrowthOS - AI 人生操作系统 · 产品需求文档</title>
-<script src="./_shared/js/mermaid.min.js"></script>
-<script src="./_shared/js/echarts.min.js"></script>
-<style>
-/* ===== CSS Variables ===== */
-:root {
-  --bg: #0b1120;
-  --bg2: #111827;
-  --surface: #1f2937;
-  --surface-light: #374151;
-  --ink: #f8fafc;
-  --muted: #94a3b8;
-  --rule: #334155;
-  --accent: #3b82f6;
-  --accent2: #10b981;
-  --accent-glow: rgba(59, 130, 246, 0.15);
-  --radius: 12px;
-  --radius-sm: 8px;
-  --max-width: 980px;
-  --sidebar-width: 260px;
-}
-
-/* ===== Reset & Base ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  line-height: 1.75;
-  font-size: 15px;
-  overflow-x: hidden;
-}
-
-/* ===== Layout ===== */
-.page-wrapper {
-  display: flex;
-  min-height: 100vh;
-}
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--bg2);
-  border-right: 1px solid var(--rule);
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  overflow-y: auto;
-  padding: 2rem 1.25rem;
-  z-index: 100;
-}
-.main-content {
-  margin-left: var(--sidebar-width);
-  flex: 1;
-  max-width: calc(var(--max-width) + 4rem);
-  padding: 0 2rem 4rem;
-}
-
-/* ===== Sidebar ===== */
-.sidebar-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 0.25rem;
-  letter-spacing: 0.02em;
-}
-.sidebar-subtitle {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-bottom: 1.5rem;
-}
-.sidebar-nav ul {
-  list-style: none;
-}
-.sidebar-nav li {
-  margin-bottom: 0.15rem;
-}
-.sidebar-nav a {
-  display: block;
-  padding: 0.45rem 0.75rem;
-  border-radius: var(--radius-sm);
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.82rem;
-  transition: all 0.2s;
-  border-left: 3px solid transparent;
-}
-.sidebar-nav a:hover,
-.sidebar-nav a.active {
-  color: var(--ink);
-  background: var(--surface);
-  border-left-color: var(--accent);
-}
-.sidebar-nav .nav-h2 { font-weight: 600; }
-.sidebar-nav .nav-h3 { padding-left: 1.25rem; font-size: 0.78rem; }
-
-/* ===== Cover ===== */
-.cover {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 4rem 0 3rem;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 3rem;
-  position: relative;
-}
-.cover-badge {
-  display: inline-block;
-  padding: 0.35rem 0.9rem;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 999px;
-  letter-spacing: 0.05em;
-  margin-bottom: 1.5rem;
-}
-.cover h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.cover-subtitle {
-  font-size: 1.25rem;
-  color: var(--muted);
-  font-weight: 400;
-  margin-bottom: 2rem;
-  max-width: 600px;
-}
-.cover-meta {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-.cover-meta-item {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-.cover-meta-item strong {
-  display: block;
-  color: var(--ink);
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 0.15rem;
-}
-
-/* ===== Sections ===== */
-.section {
-  margin-bottom: 4rem;
-}
-.section h2 {
-  font-size: 1.65rem;
-  font-weight: 700;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--accent);
-  display: inline-block;
-}
-.section h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 2rem 0 0.75rem;
-  color: var(--ink);
-}
-.section h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 1.5rem 0 0.5rem;
-  color: var(--muted);
-}
-
-p { margin-bottom: 1rem; color: var(--ink); }
-p.lead {
-  font-size: 1.05rem;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-/* ===== Tables ===== */
-.table-wrap {
-  overflow-x: auto;
-  margin: 1.5rem 0;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-}
-th {
-  background: var(--surface);
-  color: var(--ink);
-  font-weight: 600;
-  text-align: left;
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--rule);
-  white-space: nowrap;
-}
-td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--rule);
-  color: var(--ink);
-  vertical-align: top;
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(59, 130, 246, 0.04); }
-
-/* ===== Cards ===== */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.card {
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-}
-.card h4 {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--ink);
-}
-.card p {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.6;
-}
-
-/* ===== Callouts ===== */
-.callout {
-  background: var(--bg2);
-  border-left: 4px solid var(--accent);
-  padding: 1rem 1.25rem;
-  margin: 1.5rem 0;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
-.callout-accent2 { border-left-color: var(--accent2); }
-.callout-warn { border-left-color: #f59e0b; }
-.callout-danger { border-left-color: #ef4444; }
-.callout p { margin: 0; font-size: 0.9rem; }
-.callout strong { color: var(--ink); }
-
-/* ===== Lists ===== */
-ul, ol {
-  margin: 1rem 0 1rem 1.5rem;
-  color: var(--ink);
-}
-li { margin-bottom: 0.4rem; }
-
-/* ===== Mermaid Diagrams ===== */
-.mermaid-wrap {
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  text-align: center;
-  overflow-x: auto;
-}
-.mermaid-wrap .mermaid {
-  display: inline-block;
-}
-figcaption {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-top: 0.75rem;
-  text-align: center;
-}
-
-/* ===== Prototype / Wireframe ===== */
-.prototype {
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-}
-.prototype-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--rule);
-}
-.prototype-dots { display: flex; gap: 6px; }
-.prototype-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-}
-.prototype-dot.r { background: #ef4444; }
-.prototype-dot.y { background: #f59e0b; }
-.prototype-dot.g { background: #22c55e; }
-.prototype-title {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-left: auto;
-}
-
-/* Inline wireframe blocks */
-.wireframe {
-  background: var(--surface);
-  border: 1px dashed var(--rule);
-  border-radius: var(--radius-sm);
-  padding: 1rem;
-  margin: 0.5rem 0;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-.wireframe-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-/* ===== Metrics ===== */
-.metric-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.metric-box {
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  text-align: center;
-}
-.metric-value {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--accent);
-  line-height: 1.2;
-}
-.metric-label {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-top: 0.25rem;
-}
-
-/* ===== Timeline / Roadmap ===== */
-.timeline {
-  position: relative;
-  margin: 1.5rem 0;
-  padding-left: 1.5rem;
-}
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.5rem;
-  bottom: 0.5rem;
-  width: 2px;
-  background: var(--rule);
-}
-.timeline-item {
-  position: relative;
-  margin-bottom: 1.5rem;
-  padding-left: 1.25rem;
-}
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -1.5rem;
-  top: 0.4rem;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--bg);
-}
-.timeline-item.done::before { background: var(--accent2); }
-.timeline-item.pending::before { background: var(--muted); }
-.timeline-title {
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-bottom: 0.25rem;
-}
-.timeline-desc {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-/* ===== Tags / Badges ===== */
-.tag {
-  display: inline-block;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  margin-right: 0.3rem;
-}
-.tag-p0 { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-.tag-p1 { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-.tag-p2 { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
-.tag-phase { background: var(--surface); color: var(--muted); border: 1px solid var(--rule); }
-
-/* ===== Chart containers ===== */
-.chart-figure {
-  margin: 2rem 0;
-}
-.chart-figure figcaption {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 0.75rem;
-  text-align: left;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 900px) {
-  .sidebar { display: none; }
-  .main-content { margin-left: 0; padding: 0 1rem 2rem; }
-  .cover h1 { font-size: 2rem; }
-}
-
-/* ===== Print ===== */
-@media print {
-  .sidebar { display: none; }
-  .main-content { margin-left: 0; max-width: 100%; }
-  body { background: #fff; color: #000; }
-}
-
-/* ===== Scrollbar ===== */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-</style>
-</head>
-<body>
-<div class="page-wrapper">
-
-<!-- ===== Sidebar ===== -->
-<aside class="sidebar">
-  <div class="sidebar-title">GrowthOS PRD</div>
-  <div class="sidebar-subtitle">AI 人生操作系统</div>
-  <nav class="sidebar-nav">
-    <ul>
-      <li><a href="#sec-background" class="nav-h2">需求背景</a></li>
-      <li><a href="#sec-positioning" class="nav-h2">产品定位与理念</a></li>
-      <li><a href="#sec-users" class="nav-h2">用户与场景</a></li>
-      <li><a href="#sec-competitive" class="nav-h2">竞品分析</a></li>
-      <li><a href="#sec-functional" class="nav-h2">功能需求</a></li>
-      <li><a href="#feat-overview" class="nav-h3">功能概览</a></li>
-      <li><a href="#feat-onboarding" class="nav-h3">首次进入</a></li>
-      <li><a href="#feat-today" class="nav-h3">今日首页</a></li>
-      <li><a href="#feat-okr" class="nav-h3">人生 OKR</a></li>
-      <li><a href="#feat-modules" class="nav-h3">人生模块</a></li>
-      <li><a href="#feat-project" class="nav-h3">项目中心</a></li>
-      <li><a href="#feat-ai-coach" class="nav-h3">AI 教练</a></li>
-      <li><a href="#feat-growth" class="nav-h3">成长值系统</a></li>
-      <li><a href="#feat-kb" class="nav-h3">AI 第二大脑</a></li>
-      <li><a href="#feat-learning" class="nav-h3">学习系统</a></li>
-      <li><a href="#feat-finance" class="nav-h3">金融学习</a></li>
-      <li><a href="#feat-work" class="nav-h3">工作系统</a></li>
-      <li><a href="#feat-health" class="nav-h3">健康系统</a></li>
-      <li><a href="#feat-dashboard" class="nav-h3">人生驾驶舱</a></li>
-      <li><a href="#feat-community" class="nav-h3">社区与市场</a></li>
-      <li><a href="#sec-metrics" class="nav-h2">数据与指标</a></li>
-      <li><a href="#sec-ai-eval" class="nav-h2">AI 准确性与评估</a></li>
-      <li><a href="#sec-roadmap" class="nav-h2">迭代路线图</a></li>
-      <li><a href="#sec-risks" class="nav-h2">依赖与风险</a></li>
-      <li><a href="#sec-acceptance" class="nav-h2">验收标准</a></li>
-    </ul>
-  </nav>
-</aside>
-
-<!-- ===== Main Content ===== -->
-<main class="main-content">
-
-<!-- ===== Cover ===== -->
-<section class="cover">
-  <span class="cover-badge">PRODUCT REQUIREMENTS DOCUMENT</span>
-  <h1>GrowthOS</h1>
-  <p class="cover-subtitle">AI 人生操作系统 — 帮助用户不断积累人生资产，而非仅仅完成待办事项。</p>
-  <div class="cover-meta">
-    <div class="cover-meta-item">
-      <strong>文档版本</strong>
-      v1.0
-    </div>
-    <div class="cover-meta-item">
-      <strong>创建日期</strong>
-      2026-06-26
-    </div>
-    <div class="cover-meta-item">
-      <strong>产品阶段</strong>
-      MVP → V1
-    </div>
-    <div class="cover-meta-item">
-      <strong>文档深度</strong>
-      Heavyweight
-    </div>
-  </div>
-</section>
-
-<!-- ===== 1. Requirement Background ===== -->
-<section class="section" id="sec-background">
-  <h2>需求背景</h2>
-
-  <h3>业务触发</h3>
-  <p class="lead">
-    当前市面上的个人管理工具（Todo、打卡、日程、笔记）普遍存在一个核心矛盾：它们帮助用户「记录任务」，却无法帮助用户「实现成长」。用户每天打开这些工具，看到的是一堆未完成的待办事项，而不是自己离人生目标还有多远。
-  </p>
-  <p>
-    随着大语言模型能力的成熟，AI 已经能够理解用户的人生目标、职业背景、时间分配，并据此生成个性化的成长建议。这创造了全新的产品机会：一个以 AI 为核心、以「人生资产积累」为导向的个人操作系统。
-  </p>
-
-  <h3>用户现状与痛点</h3>
-  <div class="card-grid">
-    <div class="card">
-      <h4>目标碎片化</h4>
-      <p>用户同时在考研、做副业、健身、学英语，但各目标之间缺乏关联，时间分配全凭感觉，难以形成复利效应。</p>
-    </div>
-    <div class="card">
-      <h4>工具割裂</h4>
-      <p>待办在 App A，笔记在 App B，财务数据在 App C，健身数据在 App D。数据孤岛导致无法获得全局洞察。</p>
-    </div>
-    <div class="card">
-      <h4>缺乏长期视角</h4>
-      <p>现有工具聚焦「今天做什么」，从不回答「一年后你想成为谁」。用户每天都在忙碌，却感觉没有成长。</p>
-    </div>
-    <div class="card">
-      <h4>AI 未被充分利用</h4>
-      <p>市面上多数产品将 AI 作为聊天插件，而非系统核心。AI 无法真正理解用户的人生上下文，提供的建议泛泛而谈。</p>
-    </div>
-  </div>
-
-  <h3>不解决问题的后果</h3>
-  <p>
-    如果用户继续使用现有工具，他们将继续陷入「低水平勤奋」的循环：每天完成任务清单，但知识、收入、作品、健康、人脉等核心人生资产没有实质性增长。一年后回头看，除了打卡记录，几乎没有可沉淀的成果。
-  </p>
-
-  <div class="callout">
-    <p><strong>核心假设：</strong>如果有一个系统能够将用户的日常行为与长期人生目标关联起来，并通过 AI 持续提供个性化的成长指导，用户的长期成就感和资产积累效率将显著提升。</p>
-  </div>
-</section>
-
-<!-- ===== 2. Product Positioning ===== -->
-<section class="section" id="sec-positioning">
-  <h2>产品定位与理念</h2>
-
-  <h3>这不是什么</h3>
-  <ul>
-    <li>不是 Todo 工具</li>
-    <li>不是打卡软件</li>
-    <li>不是日程管理应用</li>
-    <li>不是笔记软件</li>
-  </ul>
-
-  <h3>这是什么</h3>
-  <p class="lead">
-    GrowthOS 是一套真正的 <strong>AI 人生操作系统（AI LifeOS）</strong>。它的核心使命是帮助用户持续积累人生资产，而非仅仅完成待办事项。
-  </p>
-
-  <h3>核心理念：Life Asset Management</h3>
-  <p>
-    不是 Task Management，而是 Life Asset Management。用户每天积累的是可长期复利的资产：
-  </p>
-  <div class="metric-row">
-    <div class="metric-box">
-      <div class="metric-value">知识资产</div>
-      <div class="metric-label">系统性知识库与认知升级</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value">收入资产</div>
-      <div class="metric-label">副业、投资与创业收益</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value">作品资产</div>
-      <div class="metric-label">公众号、视频、项目成果</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value">健康资产</div>
-      <div class="metric-label">运动、饮食、睡眠数据</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value">人脉资产</div>
-      <div class="metric-label">社交连接与社区关系</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value">项目资产</div>
-      <div class="metric-label">持续积累的项目成果</div>
-    </div>
-  </div>
-
-  <h3>产品设计三问</h3>
-  <p>每一个功能在立项时都必须回答三个问题：</p>
-  <ol>
-    <li><strong>用户为什么每天都会打开它？</strong> —— 功能必须提供每日不可替代的价值</li>
-    <li><strong>它如何帮助用户持续成长，而不只是完成任务？</strong> —— 功能必须连接到长期资产积累</li>
-    <li><strong>它如何沉淀用户的长期资产？</strong> —— 功能必须产出可复用的知识、作品、数据或关系</li>
-  </ol>
-  <div class="callout callout-accent2">
-    <p><strong>设计铁律：</strong>如果一个功能不能回答以上三个问题，就必须重新设计。</p>
-  </div>
-
-  <h3>用户体验目标</h3>
-  <p>打开 GrowthOS 后，AI 知道：</p>
-  <ul>
-    <li>用户是谁（职业、背景、人生阶段）</li>
-    <li>目标是什么（短期目标与长期愿景）</li>
-    <li>今天应该做什么（基于目标的智能日程）</li>
-    <li>未来一年应该怎么成长（长期路径规划）</li>
-  </ul>
-</section>
-
-<!-- ===== 3. Users & Scenarios ===== -->
-<section class="section" id="sec-users">
-  <h2>用户与场景</h2>
-
-  <h3>核心用户画像</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>维度</th>
-          <th>用户 A：职场进阶者</th>
-          <th>用户 B：副业探索者</th>
-          <th>用户 C：备考学习者</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>年龄</strong></td>
-          <td>25-35 岁</td>
-          <td>22-40 岁</td>
-          <td>20-28 岁</td>
-        </tr>
-        <tr>
-          <td><strong>职业</strong></td>
-          <td>程序员、产品经理、设计师</td>
-          <td>自由职业、新媒体运营</td>
-          <td>大学生、考研/考公人群</td>
-        </tr>
-        <tr>
-          <td><strong>核心目标</strong></td>
-          <td>升职加薪、技能提升、职业转型</td>
-          <td>打造副业收入、建立个人品牌</td>
-          <td>通过考试、获得证书</td>
-        </tr>
-        <tr>
-          <td><strong>每日时间</strong></td>
-          <td>工作日 2-3 小时可支配</td>
-          <td>时间灵活但不规律</td>
-          <td>每日 4-6 小时学习</td>
-        </tr>
-        <tr>
-          <td><strong>痛点</strong></td>
-          <td>工作忙碌但成长停滞，缺乏系统规划</td>
-          <td>多线程并行，难以追踪各项目进展</td>
-          <td>学习计划制定困难，容易拖延</td>
-        </tr>
-        <tr>
-          <td><strong>使用频率</strong></td>
-          <td>每日 2-3 次（晨/午/晚）</td>
-          <td>每日多次，随时查看</td>
-          <td>每日高频，学习时间密集使用</td>
-        </tr>
-        <tr>
-          <td><strong>决策权</strong></td>
-          <td>自己决定使用与否</td>
-          <td>自己决定，注重 ROI</td>
-          <td>价格敏感，但愿意为效率付费</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>核心使用场景</h3>
-  <div class="card-grid">
-    <div class="card">
-      <h4>场景 1：晨间规划（7:00-8:00）</h4>
-      <p>用户打开 GrowthOS，AI 已根据人生目标和今日时间生成个性化日程。用户查看今日建议，一键确认或微调，开始新的一天。</p>
-    </div>
-    <div class="card">
-      <h4>场景 2：学习时刻（14:00-17:00）</h4>
-      <p>用户进入考研/CPA/雅思学习模块，查看 AI 生成的今日学习计划，完成学习后记录笔记，系统自动归类到知识库。</p>
-    </div>
-    <div class="card">
-      <h4>场景 3：晚间复盘（21:00-22:00）</h4>
-      <p>AI 自动生成今日成长报告：完成的任务、获得的成长值、资产变化、明日建议。用户查看后确认或补充。</p>
-    </div>
-    <div class="card">
-      <h4>场景 4：周度回顾（周末）</h4>
-      <p>用户查看人生驾驶舱，了解本周各目标推进情况、成长曲线、资产积累进度，调整下周重心。</p>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 4. Competitive Research ===== -->
-<section class="section" id="sec-competitive">
-  <h2>竞品分析</h2>
-
-  <h3>竞品概览</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>竞品</th>
-          <th>定位</th>
-          <th>目标用户</th>
-          <th>核心亮点</th>
-          <th>主要不足</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Notion</strong></td>
-          <td>全能工作空间</td>
-          <td>知识工作者、团队</td>
-          <td>高度自定义、数据库强大、模板丰富</td>
-          <td>无 AI 教练、无成长追踪、无目标关联</td>
-        </tr>
-        <tr>
-          <td><strong>滴答清单</strong></td>
-          <td>任务与日程管理</td>
-          <td>个人效率用户</td>
-          <td>日程视图优秀、提醒完善、跨平台</td>
-          <td>纯任务导向、无人生目标层、无资产沉淀</td>
-        </tr>
-        <tr>
-          <td><strong>Routine</strong></td>
-          <td>习惯与日常追踪</td>
-          <td>习惯养成用户</td>
-          <td>习惯追踪可视化、连续打卡激励</td>
-          <td>功能单一、无 AI 能力、无多目标管理</td>
-        </tr>
-        <tr>
-          <td><strong>Reflect</strong></td>
-          <td>AI 笔记与思维</td>
-          <td>深度思考者</td>
-          <td>AI 关联笔记、自动分类、搜索强</td>
-          <td>无日程、无目标管理、无成长量化</td>
-        </tr>
-        <tr>
-          <td><strong>Pi (Inflection)</strong></td>
-          <td>AI 个人助手</td>
-          <td>泛用户</td>
-          <td>对话自然、情感支持、通用性强</td>
-          <td>无结构化系统、无数据沉淀、无成长追踪</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>差异化定位</h3>
-  <div class="callout">
-    <p><strong>GrowthOS 的核心差异：</strong>市面上所有产品要么偏向「任务管理」，要么偏向「知识管理」，要么偏向「AI 对话」。GrowthOS 是唯一一个将 <strong>人生目标管理</strong>、<strong>日常行为追踪</strong>、<strong>AI 智能教练</strong>、<strong>知识资产沉淀</strong> 四者融合为一体的产品。</p>
-  </div>
-
-  <h3>竞争策略</h3>
-  <ul>
-    <li><strong>差异化赛道：</strong>不直接与 Todo 工具竞争，开辟「AI 人生操作系统」新品类</li>
-    <li><strong>AI 深度集成：</strong>AI 不是附加功能，而是系统核心 — 从 Onboarding 到每日计划到知识库，AI 贯穿始终</li>
-    <li><strong>资产沉淀：</strong>用户离开成本高 — 积累的知识、作品、数据、成长曲线都沉淀在系统中</li>
-    <li><strong>社区飞轮：</strong>模板市场和成长社区形成内容供给与消费的闭环</li>
-  </ul>
-</section>
-
-<!-- ===== 5. Functional Requirements ===== -->
-<section class="section" id="sec-functional">
-  <h2>功能需求</h2>
-
-  <p class="lead">
-    功能需求是本文档的核心章节。以下按照模块组织，每个模块包含功能概览、交互原型和详细业务逻辑。
-  </p>
-
-  <h3 id="feat-overview">功能概览表</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:40px">#</th>
-          <th style="width:120px">模块</th>
-          <th>功能描述</th>
-          <th style="width:60px">优先级</th>
-          <th style="width:70px">版本</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>首次进入</td>
-          <td>AI 引导式 Onboarding，通过对话收集用户的人生目标、职业、时间、困难，自动生成个性化 GrowthOS</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>今日首页</td>
-          <td>按时间线排列今日日程，底部展示成长值、完成率、连续成长天数，顶部关联人生目标推进进度</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>人生 OKR</td>
-          <td>用户建立年度/季度目标，系统追踪完成度，所有任务自动关联到对应目标，首页实时展示推进情况</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>人生模块</td>
-          <td>用户自由添加/删除人生模块（工作、副业、股票、考研等），AI 自动生成模块页面结构和建议</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>项目中心</td>
-          <td>每个项目拥有独立的任务、资料、文件、知识、AI 建议、进度和数据视图，全部集中管理</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>AI 教练</td>
-          <td>每日早上自动生成今日计划，晚上自动生成成长报告，持续分析用户行为模式并给出优化建议</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V2</span></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>成长值系统</td>
-          <td>完成任务获得成长值，形成等级、连续成长、年度成长、成长勋章等多维度激励体系</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>AI 第二大脑</td>
-          <td>所有内容自动进入知识库，支持自动分类、全文搜索、AI 总结、AI 问答、知识关联</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V2</span></td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>学习系统</td>
-          <td>支持考研/考公/CPA/雅思等考试，AI 根据考试日期自动生成学习计划、错题管理、AI 讲解、艾宾浩斯复习</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>金融学习</td>
-          <td>每日 AI 生成金融晨报，涵盖全球热点、A股/港股/美股/黄金/美元等，附底层逻辑分析与行动建议</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>工作系统</td>
-          <td>支持任务管理、日报/周报、AI 生成公众号/小红书/PPT/总结/邮件/会议纪要、项目管理、作品集</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V2</span></td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>创业系统</td>
-          <td>支持 TikTok/私域/Shopify/跨境/小红书/抖音等业务线，SKU/供应商/客户/订单/利润管理，AI 经营分析</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V2</span></td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td>健康系统</td>
-          <td>运动、饮食、睡眠、喝水、体重、心情记录，成长曲线可视化，AI 健康建议</td>
-          <td><span class="tag tag-p1">P1</span></td>
-          <td><span class="tag tag-phase">V2</span></td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td>人生驾驶舱</td>
-          <td>Dashboard 展示人生目标完成率、知识资产数量、收入资产、作品资产、学习时长、运动天数、成长值等全部图表</td>
-          <td><span class="tag tag-p0">P0</span></td>
-          <td><span class="tag tag-phase">V1</span></td>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td>成长社区</td>
-          <td>用户分享成长、加入成长小组（考研/英语/TikTok/创业等），AI 监督、组队成长</td>
-          <td><span class="tag tag-p2">P2</span></td>
-          <td><span class="tag tag-phase">V3</span></td>
-        </tr>
-        <tr>
-          <td>16</td>
-          <td>模板市场</td>
-          <td>用户发布成长模板（TikTok/CPA/考研/程序员/创业等），其他用户购买，平台抽佣</td>
-          <td><span class="tag tag-p2">P2</span></td>
-          <td><span class="tag tag-phase">V3</span></td>
-        </tr>
-        <tr>
-          <td>17</td>
-          <td>AI Agent</td>
-          <td>AI 真正帮助用户完成事情：自动规划考研、自动写公众号初稿、自动整理资料、自动生成周报、自动分析收入</td>
-          <td><span class="tag tag-p2">P2</span></td>
-          <td><span class="tag tag-phase">V3</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 id="feat-onboarding">5.1 首次进入（Onboarding）</h3>
-
-  <h4>业务逻辑</h4>
-  <p>用户首次打开 GrowthOS 时，不展示传统表单，而是进入 AI 对话式 Onboarding。AI 通过自然语言对话收集用户的关键信息，并实时生成用户专属的 GrowthOS 初始配置。</p>
-
-  <h4>信息收集流程</h4>
-  <div class="mermaid-wrap">
-    <pre class="mermaid">
-flowchart TD
-    A[打开 APP] --> B[AI 欢迎语]
-    B --> C[问题1：今年最大目标？]
-    C --> D[问题2：目前职业？]
-    D --> E[问题3：每天可支配时间？]
-    E --> F[问题4：希望一年后变成什么样？]
-    F --> G[问题5：目前最大困难是什么？]
-    G --> H[AI 分析生成]
-    H --> I[展示个性化 GrowthOS]
-    I --> J[进入今日首页]
-    </pre>
-    <figcaption>图 1：Onboarding 对话流程</figcaption>
-  </div>
-
-  <h4>问题设计</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>问题</th><th>输入形式</th><th>选项示例</th><th>AI 处理</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>今年最大的目标？</td>
-          <td>多选 + 自定义</td>
-          <td>考研、创业、减肥、英语、副业、跳舞、阅读、TikTok</td>
-          <td>提取目标关键词，建立 Life OKR 初始项</td>
-        </tr>
-        <tr>
-          <td>目前职业？</td>
-          <td>单选 + 自定义</td>
-          <td>程序员、医生、教师、新媒体、销售、自由职业</td>
-          <td>关联工作系统默认模块</td>
-        </tr>
-        <tr>
-          <td>每天可支配时间？</td>
-          <td>时段选择</td>
-          <td>早晨、午休、晚上、周末</td>
-          <td>计算每日可用于成长的时间总量</td>
-        </tr>
-        <tr>
-          <td>希望一年后变成什么样？</td>
-          <td>文本输入</td>
-          <td>自由文本</td>
-          <td>提取愿景关键词，建立长期目标</td>
-        </tr>
-        <tr>
-          <td>目前最大的困难是什么？</td>
-          <td>文本输入</td>
-          <td>自由文本</td>
-          <td>识别障碍类型，生成针对性建议模块</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h4>AI 生成逻辑</h4>
-  <ul>
-    <li><strong>目标解析：</strong>将用户输入的目标解析为结构化 OKR，设定初始完成度为 0%</li>
-    <li><strong>模块创建：</strong>根据目标自动创建对应的人生模块（如目标含「考研」则创建「考研」模块）</li>
-    <li><strong>项目初始化：</strong>为每个目标创建默认项目（如「考研」项目包含「数学」「英语」「政治」子项）</li>
-    <li><strong>首日计划：</strong>基于用户时间和目标，生成第一天的建议日程</li>
-    <li><strong>成长基线：</strong>记录初始状态，作为后续成长曲线的起点</li>
-  </ul>
-
-  <div class="callout callout-warn">
-    <p><strong>边界情况：</strong>用户跳过某些问题时，AI 需能够基于已有信息推断合理默认值，并在后续使用中逐步补全。用户可随时在「设置-个人档案」中重新进行 Onboarding。</p>
-  </div>
-
-  <h3 id="feat-today">5.2 今日首页（Today）</h3>
-
-  <h4>页面结构</h4>
-  <p>今日首页是用户打开 GrowthOS 后的默认页面。它不按模块组织信息，而是按「今天的时间线」展示所有事项。</p>
-
-  <div class="prototype">
-    <div class="prototype-header">
-      <div class="prototype-dots"><div class="prototype-dot r"></div><div class="prototype-dot y"></div><div class="prototype-dot g"></div></div>
-      <div class="prototype-title">今日首页原型</div>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">顶部区域</div>
-      <p>日期：2026年6月26日 星期四 | 人生目标推进：72%</p>
-      <p>AI 问候：「早上好！今天建议完成 5 项成长任务，预计耗时 5 小时 20 分钟。」</p>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">时间线区域</div>
-      <p>07:00  金融晨报        [已完成]</p>
-      <p>08:00  公众号写作      [进行中]</p>
-      <p>12:30  心理学阅读      [待开始]</p>
-      <p>18:30  Jazz 练习       [待开始]</p>
-      <p>21:30  AI 复盘         [待开始]</p>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">底部状态栏</div>
-      <p>成长值：92 | 完成率：86% | 连续成长：128 天</p>
-    </div>
-  </div>
-
-  <h4>业务逻辑</h4>
-  <ul>
-    <li><strong>日程来源：</strong>今日日程由三部分组成：(1) AI 教练生成的建议任务；(2) 用户手动创建的固定日程；(3) 学习系统/项目中心推送的今日任务</li>
-    <li><strong>时间排序：</strong>所有事项按时间先后排序，无明确时间的排在底部</li>
-    <li><strong>状态流转：</strong>待开始 → 进行中（点击开始）→ 已完成（点击完成）→ 已放弃</li>
-    <li><strong>完成率计算：</strong>已完成事项数 / 总事项数（排除已放弃）</li>
-    <li><strong>成长值获取：</strong>每完成一项任务，根据任务难度和所属模块获得对应成长值</li>
-  </ul>
-
-  <h4>交互逻辑</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>用户动作</th><th>系统响应</th><th>页面变化</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>点击任务卡片</td>
-          <td>展开任务详情（含描述、关联目标、预计时间、相关文件）</td>
-          <td>底部弹出详情面板，背景模糊</td>
-        </tr>
-        <tr>
-          <td>点击「开始」</td>
-          <td>记录开始时间，启动专注计时器</td>
-          <td>卡片状态变为「进行中」，显示计时</td>
-        </tr>
-        <tr>
-          <td>点击「完成」</td>
-          <td>记录完成时间，计算实际耗时，发放成长值</td>
-          <td>卡片标记为已完成，底部成长值实时增加</td>
-        </tr>
-        <tr>
-          <td>长按任务</td>
-          <td>弹出操作菜单（编辑、删除、延后、调整时间）</td>
-          <td>显示操作浮层</td>
-        </tr>
-        <tr>
-          <td>下拉刷新</td>
-          <td>重新计算今日日程（如有新的 AI 建议）</td>
-          <td>刷新动画后更新列表</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 id="feat-okr">5.3 人生目标（Life OKR）</h3>
-
-  <h4>业务逻辑</h4>
-  <p>Life OKR 是 GrowthOS 的核心骨架。所有任务、项目、学习活动最终都关联到一个或多个 OKR 目标。系统通过追踪目标完成度，让用户始终清楚自己的人生进展。</p>
-
-  <h4>OKR 结构</h4>
-  <div class="mermaid-wrap">
-    <pre class="mermaid">
-graph TD
-    A[年度愿景] --> B[事业目标]
-    A --> C[学习目标]
-    A --> D[财富目标]
-    A --> E[健康目标]
-    A --> F[家庭目标]
-    B --> B1[创业]
-    B --> B2[公众号运营]
-    C --> C1[心理学]
-    C --> C2[英语]
-    D --> D1[副业收入]
-    E --> E1[跑步]
-    E --> E2[体重管理]
-    F --> F1[陪伴家人]
-    </pre>
-    <figcaption>图 2：Life OKR 层级结构示例</figcaption>
-  </div>
-
-  <h4>目标追踪规则</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>规则</th><th>说明</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>自动关联</td>
-          <td>用户创建任务时选择关联目标，或在项目设置中绑定目标。未手动关联的任务，AI 根据内容自动推荐关联</td>
-        </tr>
-        <tr>
-          <td>完成度计算</td>
-          <td>目标完成度 = 关联任务已完成数 / 关联任务总数 × 权重 + 关键结果达成度 × 权重。具体算法可配置</td>
-        </tr>
-        <tr>
-          <td>动态更新</td>
-          <td>任务完成时，对应目标的完成度实时更新。首页顶部展示总目标完成度</td>
-        </tr>
-        <tr>
-          <td>目标周期</td>
-          <td>支持年度目标、季度目标、月度目标。短期目标自动对齐长期目标</td>
-        </tr>
-        <tr>
-          <td>目标回顾</td>
-          <td>每周/每月自动生成目标回顾，展示各目标进展、瓶颈、调整建议</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 id="feat-modules">5.4 人生模块（动态）</h3>
-
-  <h4>设计理念</h4>
-  <p>人生模块不是固定的分类（如「工作」「生活」），而是用户自由定义的、围绕特定目标或兴趣的组织单元。每个模块拥有独立的页面、数据和 AI 建议。</p>
-
-  <h4>模块管理</h4>
-  <ul>
-    <li><strong>添加模块：</strong>用户输入模块名称（如「CPA 备考」「TikTok 运营」「股票研究」），AI 自动生成模块的默认结构（任务模板、资料区、知识分类、数据看板）</li>
-    <li><strong>删除模块：</strong>删除时询问是否保留历史数据。保留的数据进入「归档」状态，可在知识库中检索</li>
-    <li><strong>模块排序：</strong>用户可拖拽调整模块在导航中的顺序</li>
-    <li><strong>模块图标：</strong>AI 根据模块名称推荐图标，用户可自定义</li>
-  </ul>
-
-  <h4>默认模块模板</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>模块类型</th><th>自动生成内容</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>考试类（考研/CPA/雅思）</td>
-          <td>科目拆分、倒计时、每日学习计划、错题本、进度追踪</td>
-        </tr>
-        <tr>
-          <td>创作类（公众号/TikTok）</td>
-          <td>内容日历、选题库、素材管理、发布计划、数据看板</td>
-        </tr>
-        <tr>
-          <td>财务类（股票/副业）</td>
-          <td>资产记录、收益统计、交易日志、市场资讯、AI 分析</td>
-        </tr>
-        <tr>
-          <td>健康类（健身/减肥）</td>
-          <td>运动记录、饮食日志、体重曲线、AI 建议</td>
-        </tr>
-        <tr>
-          <td>技能类（英语/编程/音乐）</td>
-          <td>学习路径、练习记录、里程碑、作品集</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 id="feat-project">5.5 项目中心（Project）</h3>
-
-  <h4>业务逻辑</h4>
-  <p>项目是 GrowthOS 中承载具体事务的核心容器。所有事情（考研、创业、公众号、装修）都属于某个项目。每个项目拥有完整的任务、资料、知识、数据和 AI 建议视图。</p>
-
-  <h4>项目结构</h4>
-  <div class="prototype">
-    <div class="prototype-header">
-      <div class="prototype-dots"><div class="prototype-dot r"></div><div class="prototype-dot y"></div><div class="prototype-dot g"></div></div>
-      <div class="prototype-title">项目详情页原型</div>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">顶部导航 Tab</div>
-      <p>[概览]  [任务]  [资料]  [文件]  [知识]  [AI 建议]  [数据]</p>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">概览页</div>
-      <p>项目进度：65% | 已完成：13/20 任务 | 剩余天数：45 天</p>
-      <p>最近活动：昨天完成了「心理学 Chapter 3」</p>
-      <p>AI 建议：最近进度偏慢，建议每天增加 30 分钟学习时间</p>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">任务页</div>
-      <p>任务列表（支持看板/列表/日历视图）</p>
-      <p>子任务、截止日期、优先级、关联 OKR</p>
-    </div>
-    <div class="wireframe">
-      <div class="wireframe-label">知识页</div>
-      <p>该项目相关的所有知识条目（自动从知识库关联）</p>
-      <p>支持 AI 问答：「这个项目的核心概念是什么？」</p>
-    </div>
-  </div>
-
-  <h4>项目与模块/目标的关系</h4>
-  <div class="mermaid-wrap">
-    <pre class="mermaid">
-flowchart LR
-    A[人生 OKR] --> B[人生模块]
-    B --> C[项目 A]
-    B --> D[项目 B]
-    C --> C1[任务]
-    C --> C2[资料]
-    C --> C3[知识]
-    C --> C4[数据]
-    D --> D1[任务]
-    D --> D2[资料]
-    D --> D3[知识]
-    D --> D4[数据]
-    </pre>
-    <figcaption>图 3：OKR → 模块 → 项目 → 内容的层级关系</figcaption>
-  </div>
-
-  <h4>项目创建规则</h4>
-  <ul>
-    <li>用户可在任意模块下创建项目</li>
-    <li>项目必须关联至少一个 OKR 目标（AI 推荐，用户可修改）</li>
-    <li>项目支持子项目嵌套（最多 3 层）</li>
-    <li>项目进度 = 已完成任务权重和 / 总任务权重和</li>
-    <li>项目归档后不再出现在日常视图中，但数据保留在知识库</li>
-  </ul>
-
-  <h3 id="feat-ai-coach">5.6 AI 教练（核心）</h3>
-
-  <h4>定位</h4>
-  <p>AI 教练不是聊天机器人，而是真正理解用户人生上下文的成长教练。它通过持续分析用户的行为模式、目标进度和资产变化，主动提供每日计划和成长建议。</p>
-
-  <h4>核心功能</h4>
-  <div class="card-grid">
-    <div class="card">
-      <h4>晨间计划（每日 7:00）</h4>
-      <p>AI 根据用户人生目标、历史完成率、今日可用时间，自动生成今日建议日程。包含任务推荐、时间预估、优先级排序。</p>
-    </div>
-    <div class="card">
-      <h4>晚间复盘（每日 21:30）</h4>
-      <p>AI 自动生成成长报告：今日亮点、时间浪费分析、目标推进情况、明日优化建议。用户可一键确认或补充。</p>
-    </div>
-    <div class="card">
-      <h4>周度洞察（每周日）</h4>
-      <p>分析本周成长曲线、各模块投入时间分布、OKR 进展、下周风险预警。</p>
-    </div>
-    <div class="card">
-      <h4>即时问答</h4>
-      <p>用户可随时向 AI 教练提问：「我应该先学 Python 还是数据分析？」AI 基于用户目标和现状给出个性化建议。</p>
-    </div>
-  </div>
-
-  <h4>AI 教练生成逻辑</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>输入数据</th><th>处理方式</th><th>输出</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Life OKR 及完成度</td>
-          <td>识别进度滞后目标，优先推荐相关任务</td>
-          <td>高优先级任务列表</td>
-        </tr>
-        <tr>
-          <td>历史任务完成率</td>
-          <td>分析用户的时间规律（如上午效率高）</td>
-          <td>任务时间分配建议</td>
-        </tr>
-        <tr>
-          <td>模块进度与截止日期</td>
-          <td>计算倒计时压力，分配紧急任务</td>
-          <td>时间敏感任务提醒</td>
-        </tr>
-        <tr>
-          <td>用户当前状态</td>
-          <td>结合健康数据、心情记录调整强度</td>
-          <td>任务量动态调整</td>
-        </tr>
-        <tr>
-          <td>知识库内容</td>
-          <td>识别知识薄弱点，推荐复习或学习</td>
-          <td>学习建议与知识关联</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="callout callout-warn">
-    <p><strong>隐私与权限：</strong>AI 教练处理的所有用户数据仅用于生成个人成长建议，不用于模型训练。用户可在设置中关闭 AI 教练或调整其活跃程度。</p>
-  </div>
-
-  <h3 id="feat-growth">5.7 成长值系统</h3>
-
-  <h4>设计理念</h4>
-  <p>成长值系统是 GrowthOS 的核心激励机制。它将用户的所有成长行为量化为可视化的数值，通过多维度指标激励用户持续行动。</p>
-
-  <h4>成长值获取规则</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>行为</th><th>成长值</th><th>说明</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>完成工作相关任务</td><td>10-50 XP</td><td>根据任务难度和耗时浮动</td></tr>
-        <tr><td>完成学习任务</td><td>15-60 XP</td><td>学习内容越难，成长值越高</td></tr>
-        <tr><td>完成运动</td><td>20-40 XP</td><td>根据运动时长和强度计算</td></tr>
-        <tr><td>完成阅读</td><td>10-30 XP</td><td>根据阅读时长和书籍难度</td></tr>
-        <tr><td>完成创业/副业任务</td><td>15-50 XP</td><td>根据任务对收入的直接影响</td></tr>
-        <tr><td>连续成长天数</td><td>每日加成</td><td>连续天数越多，每日加成系数越高（最高 2.0x）</td></tr>
-        <tr><td>达成里程碑</td><td>100-500 XP</td><td>完成阶段性目标时一次性奖励</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h4>成长维度</h4>
-  <ul>
-    <li><strong>等级体系：</strong>从 Lv.1 起步，每积累一定成长值升级。等级名称映射到成长阶段（如 Lv.10「探索者」、Lv.50「践行者」、Lv.100「领航者」）</li>
-    <li><strong>连续成长：</strong>记录用户连续完成至少一项成长任务的天数。中断后需手动重新开始</li>
-    <li><strong>年度成长：</strong>每年 1 月 1 日重置年度成长值，保留历史记录供对比</li>
-    <li><strong>成长勋章：</strong>完成特定成就时获得（如「连续 30 天学习」「读完 50 本书」「副业首笔收入」）</li>
-  </ul>
-
-  <h3 id="feat-kb">5.8 AI 第二大脑（知识库）</h3>
-
-  <h4>业务逻辑</h4>
-  <p>用户在 GrowthOS 中产生的所有内容（学习笔记、金融晨报、公众号草稿、项目资料）自动进入知识库。AI 负责对知识进行分类、关联、总结和问答。</p>
-
-  <h4>知识入库流程</h4>
-  <div class="mermaid-wrap">
-    <pre class="mermaid">
-flowchart LR
-    A[用户输入内容] --> B[AI 自动分类]
-    B --> C[提取标签]
-    C --> D[关联已有知识]
-    D --> E[生成摘要]
-    E --> F[存入知识库]
-    F --> G[可搜索/问答/关联]
-    </pre>
-    <figcaption>图 4：知识自动入库流程</figcaption>
-  </div>
-
-  <h4>知识库功能</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>功能</th><th>说明</th><th>触发方式</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>自动分类</td>
-          <td>AI 根据内容主题自动归入知识分类（金融、心理学、编程、英语等）</td>
-          <td>内容创建/导入时自动触发</td>
-        </tr>
-        <tr>
-          <td>全文搜索</td>
-          <td>支持关键词搜索，结果按相关性和时间排序</td>
-          <td>用户主动搜索</td>
-        </tr>
-        <tr>
-          <td>AI 总结</td>
-          <td>对长文或系列笔记生成结构化摘要</td>
-          <td>用户点击「总结」或自动对超过 1000 字的内容生成</td>
-        </tr>
-        <tr>
-          <td>AI 问答</td>
-          <td>用户可就知识库内容提问，AI 基于已有知识回答</td>
-          <td>用户主动提问</td>
-        </tr>
-        <tr>
-          <td>知识关联</td>
-          <td>自动发现知识之间的关联，生成知识图谱</td>
-          <td>后台定期计算</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 id="feat-learning">5.9 学习系统</h3>
-
-  <h4>业务逻辑</h4>
-  <p>学习系统专为有明确考试或学习目标的用户设计。AI 根据考试日期、科目难度、用户基础，自动生成每日学习计划，并支持错题管理、AI 讲解和艾宾浩斯复习。</p>
-
-  <h4>支持的考试类型（V1）</h4>
-  <p>考研、考公、CPA、雅思、托福、四六级、教师资格证、法律职业资格、PMP、CFA</p>
-
-  <h4>学习计划生成</h4>
-  <ul>
-    <li><strong>输入：</strong>考试日期、科目列表、每日可用学习时间、用户基础自评</li>
-    <li><strong>处理：</strong>AI 计算距离考试天数，按科目难度分配总学时，生成每日具体学习任务</li>
-    <li><strong>输出：</strong>每日学习任务（如「今天完成数学 Chapter 3.2 视频学习 + 习题 10 道」）</li>
-    <li><strong>动态调整：</strong>用户未完成任务时，AI 自动将剩余内容重新分配到后续日期，优先保证重点科目</li>
-  </ul>
-
-  <h4>错题管理</h4>
-  <ul>
-    <li>用户可拍照或手动录入错题</li>
-    <li>AI 自动识别题目类型、知识点、难度</li>
-    <li>支持 AI 讲解：「这道题考查的是……正确思路是……」</li>
-    <li>按艾宾浩斯遗忘曲线自动安排错题复习（1 天、3 天、7 天、15 天、30 天）</li>
-  </ul>
-
-  <h3 id="feat-finance">5.10 金融学习系统</h3>
-
-  <h4>业务逻辑</h4>
-  <p>金融学习系统帮助用户建立系统的金融知识框架，每日提供市场洞察，并将学习内容沉淀为知识资产。</p>
-
-  <h4>每日金融晨报</h4>
-  <p>每天早上自动生成，内容包括：</p>
-  <ul>
-    <li><strong>全球热点：</strong>昨夜今晨全球市场重大事件摘要</li>
-    <li><strong>A股 / 港股 / 美股：</strong>主要指数涨跌、板块热点、资金流向</li>
-    <li><strong>黄金 / 美元 / 原油：</strong>大宗商品和外汇走势</li>
-    <li><strong>AI / 科技 / 创业：</strong>科技行业动态和创业资讯</li>
-  </ul>
-
-  <h4>每条新闻的分析维度</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>维度</th><th>说明</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>为什么发生</td><td>事件背后的驱动因素和因果关系</td></tr>
-        <tr><td>影响什么</td><td>对市场、行业、资产的潜在影响</td></tr>
-        <tr><td>普通人怎么办</td><td>对普通投资者/工作者的 actionable 建议</td></tr>
-        <tr><td>底层逻辑</td><td>事件反映的深层经济或金融原理</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h4>金融知识地图</h4>
-  <p>系统根据用户的阅读历史和收藏，构建个人金融知识地图。地图展示用户已掌握、正在学习和未涉及的知识领域，AI 推荐填补知识空白的文章和视频。</p>
-
-  <h3 id="feat-work">5.11 工作系统</h3>
-
-  <h4>业务逻辑</h4>
-  <p>工作系统面向所有职业的用户，提供任务管理、工作产出和 AI 辅助创作功能。</p>
-
-  <h4>核心功能</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>功能</th><th>说明</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>任务管理</td><td>支持个人任务和团队协作任务，关联项目和 OKR</td></tr>
-        <tr><td>日报 / 周报</td><td>AI 根据完成的任务自动生成日报/周报草稿，用户一键确认</td></tr>
-        <tr><td>AI 创作助手</td><td>支持生成公众号文章、小红书文案、PPT 大纲、邮件、会议纪要</td></tr>
-        <tr><td>项目管理</td><td>看板视图、甘特图、里程碑追踪</td></tr>
-        <tr><td>作品集</td><td>自动汇总用户的工作成果，生成可分享的作品集页面</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 id="feat-health">5.12 健康系统</h3>
-
-  <h4>业务逻辑</h4>
-  <p>健康系统追踪用户的运动、饮食、睡眠、喝水、体重和心情数据，形成健康资产的可视化成长曲线。</p>
-
-  <h4>数据追踪</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>维度</th><th>记录方式</th><th>可视化</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>运动</td><td>手动记录或接入可穿戴设备</td><td>周/月运动时长、热量消耗趋势图</td></tr>
-        <tr><td>饮食</td><td>拍照识别 + 手动记录</td><td>每日营养摄入分析、饮食习惯评分</td></tr>
-        <tr><td>睡眠</td><td>手动记录或接入设备</td><td>睡眠质量趋势、平均入睡/起床时间</td></tr>
-        <tr><td>喝水</td><td>手动打卡</td><td>每日饮水量、达标天数</td></tr>
-        <tr><td>体重</td><td>手动记录</td><td>体重变化曲线、BMI 趋势</td></tr>
-        <tr><td>心情</td><td>每日心情评分 + 标签</td><td>心情日历、情绪波动分析</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h4>AI 健康建议</h4>
-  <p>AI 基于用户的健康数据，提供个性化建议。例如：「你最近 3 天睡眠不足 6 小时，建议今晚 23:00 前入睡」「本周运动 4 次，达成目标！建议增加一些力量训练」。</p>
-
-  <h3 id="feat-dashboard">5.13 人生驾驶舱（Dashboard）</h3>
-
-  <h4>业务逻辑</h4>
-  <p>人生驾驶舱是用户全局视角的核心页面。它用图表和数据展示用户在各个维度的人生资产积累情况，让用户一眼看清自己的成长全景。</p>
-
-  <h4>核心指标</h4>
-  <div class="metric-row">
-    <div class="metric-box">
-      <div class="metric-value" style="font-size:1.3rem">72%</div>
-      <div class="metric-label">人生目标完成</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value" style="font-size:1.3rem">823</div>
-      <div class="metric-label">知识资产条</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value" style="font-size:1.3rem">132k</div>
-      <div class="metric-label">收入资产（元）</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value" style="font-size:1.3rem">72</div>
-      <div class="metric-label">作品资产篇</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value" style="font-size:1.3rem">480h</div>
-      <div class="metric-label">学习时长</div>
-    </div>
-    <div class="metric-box">
-      <div class="metric-value" style="font-size:1.3rem">286</div>
-      <div class="metric-label">运动天数</div>
-    </div>
-  </div>
-
-  <h4>图表展示</h4>
-  <ul>
-    <li><strong>成长曲线：</strong>近 30 天每日成长值变化折线图</li>
-    <li><strong>目标雷达图：</strong>各人生维度的当前进度（事业、学习、财富、健康、家庭）</li>
-    <li><strong>时间投入饼图：</strong>本周各模块时间投入占比</li>
-    <li><strong>资产增长柱状图：</strong>知识/收入/作品资产按月统计</li>
-    <li><strong>连续成长日历：</strong>以日历热力图形式展示每日成长情况</li>
-  </ul>
-
-  <h3 id="feat-community">5.14 成长社区与模板市场</h3>
-
-  <h4>成长社区（V3）</h4>
-  <ul>
-    <li>用户可发布成长动态，分享每日/每周的成长成果</li>
-    <li>支持加入成长小组（考研组、英语组、TikTok 组、创业组等）</li>
-    <li>AI 监督：小组成员的成长数据可互相可见，AI 定期生成小组排名和激励</li>
-    <li>组队成长：用户可发起或加入「组队挑战」（如「30 天英语学习打卡」）</li>
-  </ul>
-
-  <h4>模板市场（V3）</h4>
-  <ul>
-    <li>Creator 用户可发布成长模板（包含完整的模块配置、项目结构、AI 提示词）</li>
-    <li>模板类型：TikTok 成长系统、CPA 成长系统、考研成长系统、程序员成长系统等</li>
-    <li>其他用户可购买/订阅模板，一键应用到自己的人生系统中</li>
-    <li>平台抽佣比例：创作者 70%，平台 30%</li>
-  </ul>
-
-  <h4>AI Agent（V3）</h4>
-  <p>AI Agent 是 GrowthOS 的终极形态。AI 不仅提供建议，还能直接帮助用户完成具体任务：</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>用户指令</th><th>AI Agent 执行</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>帮我规划考研</td><td>自动生成完整的考研计划模块、科目拆分、每日任务</td></tr>
-        <tr><td>帮我写公众号</td><td>基于知识库内容和热点，生成公众号初稿</td></tr>
-        <tr><td>帮我整理资料</td><td>自动读取文件，分类、打标签、存入知识库</td></tr>
-        <tr><td>帮我做周报</td><td>读取本周完成的任务，自动生成周报</td></tr>
-        <tr><td>帮我分析收入</td><td>读取财务数据，生成收入分析和优化建议</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-</section>
-
-<!-- ===== 6. Data & Metrics ===== -->
-<section class="section" id="sec-metrics">
-  <h2>数据与指标</h2>
-
-  <h3>核心指标框架</h3>
-  <p>GrowthOS 的数据指标体系围绕「用户成长」和「产品健康」两个维度构建。</p>
-
-  <h4>用户成长指标</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>指标</th><th>定义</th><th>目标值</th><th>追踪频率</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>DAU（日活跃用户）</td><td>每日打开 APP 并完成至少一项任务的用户数</td><td>V1 末达到 5,000</td><td>每日</td></tr>
-        <tr><td>任务完成率</td><td>已完成任务数 / 生成任务总数</td><td>> 60%</td><td>每日</td></tr>
-        <tr><td>连续成长天数（中位数）</td><td>用户连续完成任务的中间天数</td><td>> 7 天</td><td>每周</td></tr>
-        <tr><td>OKR 目标完成率</td><td>目标达成数 / 总目标数</td><td>> 50%</td><td>每月</td></tr>
-        <tr><td>知识库条目增长</td><td>用户每月新增知识条目数（中位数）</td><td>> 20 条</td><td>每月</td></tr>
-        <tr><td>AI 教练采纳率</td><td>用户采纳 AI 建议任务的比例</td><td>> 70%</td><td>每周</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h4>产品健康指标</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>指标</th><th>定义</th><th>目标值</th><th>追踪频率</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>次日留存</td><td>新用户次日返回比例</td><td>> 40%</td><td>每日</td></tr>
-        <tr><td>7 日留存</td><td>新用户 7 日后返回比例</td><td>> 25%</td><td>每日</td></tr>
-        <tr><td>30 日留存</td><td>新用户 30 日后返回比例</td><td>> 15%</td><td>每日</td></tr>
-        <tr><td>付费转化率</td><td>Pro 会员数 / 总注册用户数</td><td>> 5%</td><td>每月</td></tr>
-        <tr><td>平均使用时长</td><td>用户每次打开 APP 的平均使用时长</td><td>> 8 分钟</td><td>每日</td></tr>
-        <tr><td>NPS（净推荐值）</td><td>用户推荐意愿评分</td><td>> 30</td><td>每季度</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h4>事件追踪规范</h4>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>事件名</th><th>触发时机</th><th>属性字段</th><th>用途</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>app_open</td><td>打开 APP</td><td>source, time_of_day</td><td>分析用户使用时段</td></tr>
-        <tr><td>task_complete</td><td>完成任务</td><td>module, project, duration, xp_earned</td><td>计算完成率、成长值</td></tr>
-        <tr><td>ai_suggest_accept</td><td>采纳 AI 建议</td><td>suggest_type, task_type</td><td>评估 AI 建议质量</td></tr>
-        <tr><td>okr_update</td><td>更新 OKR 进度</td><td>goal_id, old_value, new_value</td><td>追踪目标达成</td></tr>
-        <tr><td>kb_entry_create</td><td>创建知识条目</td><td>category, source</td><td>追踪知识积累</td></tr>
-        <tr><td>subscription_start</td><td>开始订阅</td><td>plan, source, price</td><td>分析付费转化</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- ===== 7. AI Accuracy & Evaluation ===== -->
-<section class="section" id="sec-ai-eval">
-  <h2>AI 准确性与评估</h2>
-
-  <h3>AI 输出质量定义</h3>
-  <p>GrowthOS 的 AI 输出质量评估覆盖以下维度：</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>维度</th><th>定义</th><th>评估方式</th><th>合格标准</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>正确性</td><td>生成内容的事实准确性</td><td>人工抽检 + 用户反馈</td><td>事实错误率 < 5%</td></tr>
-        <tr><td>相关性</td><td>建议/计划与用户目标的匹配度</td><td>用户采纳率</td><td>采纳率 > 70%</td></tr>
-        <tr><td>可执行性</td><td>生成的任务是否可在现实中完成</td><td>人工评估</td><td>可执行率 > 90%</td></tr>
-        <tr><td>个性化</td><td>输出是否体现用户个人上下文</td><td>A/B 对比测试</td><td>用户满意度 > 4.0/5</td></tr>
-        <tr><td>格式一致性</td><td>输出格式是否符合规范</td><td>自动化测试</td><td>格式错误率 < 2%</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>评估体系</h3>
-
-  <h4>离线评估</h4>
-  <ul>
-    <li><strong>标准样本集：</strong>建立 200+ 标准测试用例，覆盖 Onboarding、计划生成、复盘、问答等核心场景</li>
-    <li><strong>边界样本：</strong>包含极端情况（如用户只有 30 分钟/天、目标冲突等）</li>
-    <li><strong>回归样本：</strong>每次模型更新前，必须在回归样本集上验证，确保已有能力不下降</li>
-  </ul>
-
-  <h4>人工审核</h4>
-  <ul>
-    <li>每周随机抽取 100 条 AI 输出，由产品团队进行质量评分（1-5 分）</li>
-    <li>评分维度：准确性、相关性、个性化、表达质量</li>
-    <li>低于 3 分的输出记入 bad-case 库，用于模型优化</li>
-  </ul>
-
-  <h4>在线反馈</h4>
-  <ul>
-    <li>用户对每条 AI 建议可点赞/点踩</li>
-    <li>用户可编辑 AI 生成的任务/计划，编辑率作为质量反向指标</li>
-    <li>追踪用户是否按照 AI 建议执行（任务完成率）</li>
-  </ul>
-
-  <h3>Go/No-Go 标准</h3>
-  <div class="callout callout-warn">
-    <p><strong>V1 发布前必须满足：</strong></p>
-    <ul style="margin:0.5rem 0 0 1.5rem">
-      <li>AI 生成计划的采纳率 ≥ 60%</li>
-      <li>Onboarding 生成配置的满意度 ≥ 4.0/5</li>
-      <li>事实性错误率 ≤ 5%</li>
-      <li>生成延迟 ≤ 3 秒（P95）</li>
-    </ul>
-  </div>
-
-  <h3>降级机制</h3>
-  <ul>
-    <li><strong>低置信度提示：</strong>当 AI 对建议不确定时，明确告知用户「这个建议基于有限信息，建议确认」</li>
-    <li><strong>人工确认：</strong>高风险操作（如删除大量数据、修改关键目标）需用户二次确认</li>
-    <li><strong>规则兜底：</strong>当 AI 服务不可用时，系统按预设规则生成默认计划</li>
-  </ul>
-</section>
-
-<!-- ===== 8. Roadmap ===== -->
-<section class="section" id="sec-roadmap">
-  <h2>迭代路线图</h2>
-
-  <h3>版本规划</h3>
-
-  <h4>V1：个人成长系统（4-6 周）</h4>
-  <div class="timeline">
-    <div class="timeline-item done">
-      <div class="timeline-title">Week 1-2：核心框架</div>
-      <div class="timeline-desc">今日首页、Life OKR、人生模块、项目中心、成长值系统</div>
-    </div>
-    <div class="timeline-item done">
-      <div class="timeline-title">Week 3-4：学习场景</div>
-      <div class="timeline-desc">学习系统（考研/考公/CPA/雅思）、金融晨报、AI 基础计划生成</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-title">Week 5-6：优化与复盘</div>
-      <div class="timeline-desc">人生驾驶舱、晚间复盘、数据追踪、 onboarding 优化</div>
-    </div>
-  </div>
-
-  <h4>V2：AI 深度集成（6-8 周）</h4>
-  <div class="timeline">
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 1-2：AI 教练升级</div>
-      <div class="timeline-desc">晨间计划智能化、个性化建议、行为模式分析</div>
-    </div>
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 3-4：AI 第二大脑</div>
-      <div class="timeline-desc">知识库自动分类、AI 总结、AI 问答、知识关联</div>
-    </div>
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 5-6：工作与健康</div>
-      <div class="timeline-desc">工作系统（AI 创作、日报/周报）、健康系统</div>
-    </div>
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 7-8：创业系统</div>
-      <div class="timeline-desc">创业模块（TikTok/Shopify/私域）、AI 经营分析</div>
-    </div>
-  </div>
-
-  <h4>V3：生态与商业化（8-10 周）</h4>
-  <div class="timeline">
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 1-3：成长社区</div>
-      <div class="timeline-desc">社区动态、成长小组、AI 监督、组队挑战</div>
-    </div>
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 4-6：模板市场</div>
-      <div class="timeline-desc">模板发布、购买、评价、创作者后台</div>
-    </div>
-    <div class="timeline-item pending">
-      <div class="timeline-title">Week 7-10：AI Agent</div>
-      <div class="timeline-desc">自动规划、自动创作、自动整理、自动分析</div>
-    </div>
-  </div>
-
-  <h3>商业模式</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>版本</th><th>功能</th><th>价格</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>免费版</td>
-          <td>基础成长系统、AI 每日总结、打卡、知识库（100条上限）</td>
-          <td>免费</td>
-        </tr>
-        <tr>
-          <td>Pro 会员</td>
-          <td>AI 教练、AI 第二大脑、AI 学习、AI 人生规划、AI 分析、无限知识库</td>
-          <td>￥29/月 或 ￥298/年</td>
-        </tr>
-        <tr>
-          <td>Creator</td>
-          <td>模板发布、课程发布、成长系统发布、收益提现</td>
-          <td>平台抽佣 30%</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- ===== 9. Risks & Dependencies ===== -->
-<section class="section" id="sec-risks">
-  <h2>依赖与风险</h2>
-
-  <h3>技术依赖</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>依赖项</th><th>用途</th><th>备选方案</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>GPT-4 / Claude / DeepSeek</td><td>AI 教练核心模型</td><td>可切换，DeepSeek 作为成本备选</td></tr>
-        <tr><td>Supabase</td><td>数据库 + 认证 + 存储</td><td>自建 PostgreSQL + MinIO</td></tr>
-        <tr><td>UniApp</td><td>跨端开发框架</td><td>微信小程序原生 + Taro</td></tr>
-        <tr><td>ECharts</td><td>数据可视化</td><td>Chart.js</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>风险清单</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>风险</th><th>概率</th><th>影响</th><th>缓解策略</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>AI 生成质量不稳定</td>
-          <td>中</td>
-          <td>高</td>
-          <td>建立 prompt 工程规范 + 输出校验层 + 人工审核机制 + 用户反馈闭环</td>
-        </tr>
-        <tr>
-          <td>用户留存低于预期</td>
-          <td>中</td>
-          <td>高</td>
-          <td>强化成长值激励 + 社区组队 + 模板市场 + 连续成长机制</td>
-        </tr>
-        <tr>
-          <td>AI 调用成本过高</td>
-          <td>中</td>
-          <td>中</td>
-          <td>分层策略（简单任务用轻量模型）+ 缓存机制 + 异步处理 + DeepSeek 备选</td>
-        </tr>
-        <tr>
-          <td>数据隐私合规</td>
-          <td>低</td>
-          <td>高</td>
-          <td>数据加密存储 + 明确隐私政策 + 用户数据导出/删除功能 + 不涉及模型训练</td>
-        </tr>
-        <tr>
-          <td>竞品快速跟进</td>
-          <td>高</td>
-          <td>中</td>
-          <td>快速迭代 + 社区生态 + 模板市场构建壁垒 + 用户资产沉淀提高迁移成本</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>关键里程碑</h3>
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-title">M1：需求评审完成</div>
-      <div class="timeline-desc">PRD 定稿，技术方案确认，设计稿完成</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-title">M2：MVP 内测</div>
-      <div class="timeline-desc">V1 核心功能可用，邀请 100 名种子用户内测</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-title">M3：V1 公测</div>
-      <div class="timeline-desc">微信小程序上线，开放注册，收集反馈</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-title">M4：V2 发布</div>
-      <div class="timeline-desc">AI 教练升级 + AI 第二大脑 + 工作/健康系统</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-title">M5：商业化启动</div>
-      <div class="timeline-desc">Pro 会员上线 + 模板市场内测</div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 10. Acceptance Criteria ===== -->
-<section class="section" id="sec-acceptance">
-  <h2>验收标准</h2>
-
-  <h3>V1 MVP 验收清单</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>#</th><th>验收项</th><th>验收标准</th><th>验证方式</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>1</td><td>Onboarding 流程</td><td>新用户可在 3 分钟内完成 onboarding，生成包含至少 3 个模块的初始系统</td><td>用户测试（10人）</td></tr>
-        <tr><td>2</td><td>今日首页</td><td>日程按时间排序，支持开始/完成/放弃操作，完成率实时更新</td><td>功能测试</td></tr>
-        <tr><td>3</td><td>Life OKR</td><td>支持创建/编辑/删除目标，任务自动关联，完成度实时计算</td><td>功能测试</td></tr>
-        <tr><td>4</td><td>人生模块</td><td>支持添加/删除/排序模块，AI 自动生成模块结构</td><td>功能测试</td></tr>
-        <tr><td>5</td><td>项目中心</td><td>支持创建项目，包含任务/资料/知识/数据视图</td><td>功能测试</td></tr>
-        <tr><td>6</td><td>学习系统</td><td>支持至少 5 种考试类型，AI 生成学习计划，支持错题录入和复习提醒</td><td>功能测试</td></tr>
-        <tr><td>7</td><td>金融晨报</td><td>每日 7:00 自动生成，包含至少 3 个市场维度</td><td>功能测试</td></tr>
-        <tr><td>8</td><td>人生驾驶舱</td><td>展示至少 6 个核心指标，包含 3 种以上图表类型</td><td>功能测试</td></tr>
-        <tr><td>9</td><td>成长值系统</td><td>完成任务自动发放成长值，连续成长天数正确计算</td><td>功能测试</td></tr>
-        <tr><td>10</td><td>性能</td><td>页面加载 < 2 秒，AI 生成 < 5 秒（P95）</td><td>性能测试</td></tr>
-        <tr><td>11</td><td>稳定性</td><td>核心流程可用性 > 99.5%</td><td>监控数据</td></tr>
-        <tr><td>12</td><td>数据安全</td><td>用户数据加密存储，支持导出和删除</td><td>安全审计</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>AI 功能验收标准</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>功能</th><th>验收标准</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Onboarding AI 对话</td><td>5 个问题全部支持，对话自然流畅，生成配置准确</td></tr>
-        <tr><td>每日计划生成</td><td>基于用户目标和时间，生成 3-8 条可执行任务</td></tr>
-        <tr><td>目标关联推荐</td><td>未手动关联的任务，AI 推荐关联准确率 > 80%</td></tr>
-        <tr><td>模块结构生成</td><td>根据模块名称生成合理的默认结构（任务/资料/知识）</td></tr>
-        <tr><td>学习计划生成</td><td>考虑考试日期和科目难度，生成的计划可执行</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="callout callout-accent2">
-    <p><strong>上线准则：</strong>V1 必须通过全部 12 项功能验收 + 5 项 AI 功能验收，且内测用户 NPS > 20，方可进入公测阶段。</p>
-  </div>
-</section>
-
-<!-- ===== Footer ===== -->
-<footer style="border-top:1px solid var(--rule);padding-top:2rem;margin-top:4rem;color:var(--muted);font-size:0.85rem;">
-  <p>GrowthOS 产品需求文档 v1.0 | 2026-06-26 | 内部机密，请勿外传</p>
-</footer>
-
-</main>
-</div>
-
-<script>
-  mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').then(function(reg) {
-      console.log('Service Worker registered', reg.scope);
-    }).catch(function(err) {
-      console.log('Service Worker registration failed', err);
-    });
-  }
-</script>
-</body>
-</html>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1120" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GrowthOS" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <title>GrowthOS</title>
+
+  <style>
+    :root {
+      --bg: #080d19;
+      --card: #111c2f;
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --rule: rgba(148, 163, 184, .18);
+      --blue: #3b82f6;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: calc(14px + var(--safe-top)) 16px calc(92px + var(--safe-bottom));
+      background:
+        radial-gradient(circle at 10% -10%, rgba(59, 130, 246, .24), transparent 34%),
+        radial-gradient(circle at 90% 0%, rgba(16, 185, 129, .16), transparent 32%),
+        var(--bg);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(59, 130, 246, .28);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .ghost {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      min-width: 42px;
+      height: 38px;
+      padding: 0 12px;
+    }
+
+    .hero {
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      padding: 18px;
+      background: linear-gradient(160deg, rgba(17, 28, 47, .98), rgba(12, 20, 36, .92));
+      box-shadow: 0 18px 60px rgba(0,0,0,.22);
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .hero-title h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .hero-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .score {
+      text-align: right;
+    }
+
+    .score strong {
+      display: block;
+      font-size: 32px;
+      line-height: 1;
+      color: var(--green);
+    }
+
+    .score span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,.055);
+      border: 1px solid var(--rule);
+      border-radius: 18px;
+      padding: 12px 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .coach {
+      margin-top: 14px;
+      background: rgba(59, 130, 246, .10);
+      border: 1px solid rgba(59, 130, 246, .25);
+      border-radius: 18px;
+      padding: 13px;
+      color: #dbeafe;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0 10px;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .linkbtn {
+      color: var(--blue);
+      background: transparent;
+      font-size: 13px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+      border-radius: 20px;
+      background: var(--card);
+      border: 1px solid var(--rule);
+    }
+
+    .time {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .task-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .task-meta {
+      margin-top: 4px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      font-size: 10px;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+      background: rgba(255,255,255,.04);
+      border-radius: 999px;
+      padding: 2px 7px;
+    }
+
+    .done .task-title {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .check {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--rule);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+    }
+
+    .done .check {
+      background: rgba(16,185,129,.18);
+      border-color: rgba(16,185,129,.45);
+      color: var(--green);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 22px;
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+
+    .card h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .progress {
+      height: 8px;
+      background: rgba(255,255,255,.07);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 8px;
+    }
+
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      border-radius: 999px;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .project {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .project small {
+      color: var(--muted);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      padding: 10px 12px calc(10px + var(--safe-bottom));
+      background: rgba(8, 13, 25, .88);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid var(--rule);
+    }
+
+    .tab {
+      background: transparent;
+      border-radius: 16px;
+      padding: 8px 4px;
+      color: var(--muted);
+      font-size: 11px;
+      display: grid;
+      gap: 3px;
+      place-items: center;
+    }
+
+    .tab i {
+      font-style: normal;
+      font-size: 18px;
+    }
+
+    .tab.active {
+      background: rgba(59, 130, 246, .16);
+      color: var(--ink);
+    }
+
+    .fab {
+      position: fixed;
+      right: 18px;
+      bottom: calc(82px + var(--safe-bottom));
+      width: 56px;
+      height: 56px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      font-size: 28px;
+      box-shadow: 0 18px 40px rgba(59,130,246,.35);
+      z-index: 40;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: flex-end;
+      background: rgba(0,0,0,.55);
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .sheet {
+      width: 100%;
+      background: #0d1524;
+      border-radius: 26px 26px 0 0;
+      border: 1px solid var(--rule);
+      padding: 18px 16px calc(18px + var(--safe-bottom));
+      box-shadow: 0 -20px 60px rgba(0,0,0,.4);
+    }
+
+    .sheet h3 {
+      margin: 0 0 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: 1px solid var(--rule);
+      background: rgba(255,255,255,.05);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 12px 13px;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      border-radius: 16px;
+      padding: 13px;
+      font-weight: 800;
+    }
+
+    .secondary {
+      background: rgba(255,255,255,.07);
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      padding: 13px;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px 10px;
+      border: 1px dashed var(--rule);
+      border-radius: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(150px + var(--safe-bottom));
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      background: rgba(15, 23, 42, .96);
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      padding: 10px 15px;
+      color: var(--ink);
+      font-size: 13px;
+      transition: .22s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .review-box {
+      background: linear-gradient(160deg, rgba(59,130,246,.12), rgba(16,185,129,.10));
+      border: 1px solid var(--rule);
+      border-radius: 22px;
+      padding: 16px;
+      color: #e2e8f0;
+      line-height: 1.7;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    @media (min-width: 720px
