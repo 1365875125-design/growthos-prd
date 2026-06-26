@@ -1,4 +1,4 @@
-const CACHE_NAME = 'growthos-demo-app-v2';
+const CACHE_NAME = 'growthos-demo-simple-v1';
 
 const ASSETS = [
   './',
@@ -7,46 +7,42 @@ const ASSETS = [
   './icon.svg'
 ];
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(function (cache) {
+      return cache.addAll(ASSETS);
+    })
   );
 
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', function (event) {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
+    caches.keys().then(function (keys) {
+      return Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      )
-    )
+          .filter(function (key) {
+            return key !== CACHE_NAME;
+          })
+          .map(function (key) {
+            return caches.delete(key);
+          })
+      );
+    })
   );
 
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', function (event) {
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.match(event.request).then(function (cached) {
       if (cached) return cached;
 
-      return fetch(event.request)
-        .then((response) => {
-          if (!response || response.status !== 200) return response;
-
-          const copy = response.clone();
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, copy);
-          });
-
-          return response;
-        })
-        .catch(() => caches.match('./index.html'));
+      return fetch(event.request).catch(function () {
+        return caches.match('./index.html');
+      });
     })
   );
 });
